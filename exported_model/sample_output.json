@@ -1,0 +1,14 @@
+{
+    "latest_date": "2026-05-29 00:00:00",
+    "prediction_date": "2026-06-28 00:00:00",
+    "latest_price": 17878.0,
+    "predicted_return_30d": -2.3256033110601537,
+    "predicted_price_30d": 17462.228640048666,
+    "predicted_class": 0,
+    "predicted_label": "Menguat",
+    "model_type": "ENSEMBLE",
+    "lower_threshold": -0.4,
+    "upper_threshold": 0.6,
+    "gbr_weight": 0.14,
+    "xgb_weight": 0.9
+}

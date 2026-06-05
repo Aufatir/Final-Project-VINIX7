@@ -1,0 +1,27 @@
+{
+    "final_model_type": "ENSEMBLE",
+    "final_w_gbr": 0.14,
+    "final_w_xgb": 0.9,
+    "final_lower": -0.4,
+    "final_upper": 0.6,
+    "selected_features_final": [
+        "USDIDR",
+        "DXY",
+        "VIX",
+        "IHSG",
+        "BI_Rate",
+        "rate_diff",
+        "USDIDR_roll_mean20",
+        "M2_growth_12m",
+        "US10Y_roll_mean20",
+        "IHSG_roll_mean20",
+        "BRENT_return_1d",
+        "IHSG_roll_std20",
+        "high_vix_regime"
+    ],
+    "label_map": {
+        "0": "Menguat",
+        "1": "Stabil",
+        "2": "Melemah"
+    }
+}

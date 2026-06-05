@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RupiahLens - Analisis Nilai Tukar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar / Input Panel -->
+        <aside class="sidebar glass-panel">
+            <div class="logo-area">
+                <h2>RupiahLens</h2>
+                <p>Prediksi Nilai Tukar</p>
+            </div>
+            
+            <form id="prediction-form" class="form-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                    <h3 style="margin: 0;">Indikator Makro</h3>
+                    <button type="button" id="fetch-data-btn" class="glow-on-hover" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 6px;">Ambil Data Aktual</button>
+                </div>
+                <div class="input-grid-sidebar">
+                    <div class="input-group">
+                        <label for="USDIDR">USD/IDR Saat Ini</label>
+                        <input type="number" id="USDIDR" name="USDIDR" step="any" value="17878.0" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="DXY">Indeks Dolar (DXY)</label>
+                        <input type="number" id="DXY" name="DXY" step="any" value="98.91" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="VIX">Indeks Volatilitas (VIX)</label>
+                        <input type="number" id="VIX" name="VIX" step="any" value="15.32" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="IHSG">IHSG</label>
+                        <input type="number" id="IHSG" name="IHSG" step="any" value="6127.38" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="BI_Rate">BI Rate (%)</label>
+                        <input type="number" id="BI_Rate" name="BI_Rate" step="any" value="5.25" required>
+                    </div>
+                </div>
+                
+                <button type="submit" id="predict-btn" class="glow-on-hover">Jalankan Prediksi</button>
+            </form>
+            
+            <div style="margin-top: auto; padding-top: 2rem; font-size: 0.75rem; color: #64748b; text-align: center; line-height: 1.4;">
+                <p>Website ini merupakan final project dari <strong>Vinix7</strong>.</p>
+                <p style="margin-top: 0.5rem;">Dibuat oleh Kelompok 5:<br>
+                Aufatir Diaul Haq<br>
+                Muhammad Zainal Ilmi<br>
+                Giska Laura</p>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Content -->
+        <main class="main-dashboard">
+            <header class="top-nav">
+                <h1>RupiahLens Intelligence</h1>
+                <p>Proyeksi 30 Hari & Analisis Dampak Ekonomi</p>
+            </header>
+
+            <!-- Initial state before prediction -->
+            <div id="welcome-state" class="glass-panel text-center">
+                <h2 style="margin-bottom: 1rem; color: var(--accent-blue);">Sistem Siap</h2>
+                <p style="color: #cbd5e1;">Periksa input di panel kiri dan klik "Jalankan Prediksi" untuk menghasilkan dashboard analitik.</p>
+            </div>
+
+            <!-- Result Dashboard -->
+            <div id="results-dashboard" class="dashboard-grid hidden">
+                
+                <!-- 1. Summary Card -->
+                <div class="card glass-panel summary-card" style="justify-content: space-between;">
+                    <h3 class="card-title" style="margin-bottom: 0;">Ringkasan Prediksi</h3>
+                    <div id="status-badge" class="status-badge stabil" style="flex-grow: 1; display: flex; align-items: center; justify-content: center; margin: 1.5rem 0; border-radius: 16px; font-size: 2.2rem; width: 100%; box-shadow: inset 0 0 20px rgba(0,0,0,0.2);">
+                        <span id="label-text">MENUNGGU DATA</span>
+                    </div>
+                    <div class="metrics-row">
+                        <div class="metric-box">
+                            <span class="m-label">Prediksi Return 30h</span>
+                            <span class="m-val" id="val-return">--%</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="m-label">Target Harga (Rp)</span>
+                            <span class="m-val" id="val-price">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Market Sentiment & Risk Card -->
+                <div class="card glass-panel sentiment-card">
+                    <h3 class="card-title">Konteks Pasar</h3>
+                    <div class="context-grid">
+                        <div class="context-item">
+                            <span class="c-label">Tingkat Risiko</span>
+                            <span class="c-val" id="risk-level-badge">--</span>
+                        </div>
+                        <div class="context-item">
+                            <span class="c-label">Sentimen</span>
+                            <span class="c-val" id="sentiment-text" style="color: #fff;">--</span>
+                        </div>
+                    </div>
+                    <div class="ai-insight">
+                        <p id="ai-insight-text">Menunggu data...</p>
+                    </div>
+                </div>
+
+                <!-- 3. Probability Chart -->
+                <div class="card glass-panel prob-card" style="display: flex; flex-direction: column;">
+                    <h3 class="card-title" style="margin-bottom: 0;">Probabilitas Kelas</h3>
+                    <div class="chart-container" style="position: relative; flex-grow: 1; min-height: 200px; width:100%; display: flex; align-items: center; justify-content: center; padding-top: 1rem;">
+                        <canvas id="probChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 4. Trend Movement Visualization (Large Chart) -->
+                <div class="card glass-panel trend-card" style="height: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 1rem; padding-bottom: 0.5rem;">
+                        <h3 class="card-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">Tren USD/IDR & Proyeksi 30 Hari</h3>
+                        <div class="timeframe-selector" style="display: flex; gap: 0.5rem;">
+                            <button class="tf-btn" data-days="30">30H</button>
+                            <button class="tf-btn active" data-days="60">60H</button>
+                            <button class="tf-btn" data-days="90">90H</button>
+                            <button class="tf-btn" data-days="365">1T</button>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="position: relative; flex-grow: 1; width:100%; min-height: 250px;">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Right Column Stack for Row 2 -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem; grid-column: span 1;">
+                    <!-- 5. Feature Importance Chart -->
+                    <div class="card glass-panel feature-card" style="flex: 1;">
+                        <h3 class="card-title">Pendorong Utama Ekonomi</h3>
+                        <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">Faktor teratas yang memengaruhi prediksi ini</p>
+                        <div class="chart-container" style="position: relative; height:150px; width:100%">
+                            <canvas id="featureChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 6. Model Performance Card -->
+                    <div class="card glass-panel performance-card" style="flex: 1;">
+                        <h3 class="card-title">Kinerja Model AI</h3>
+                        <div class="metrics-row" style="flex-direction: column; gap: 10px; margin-top: auto;">
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                                <span class="m-label" style="margin:0;">Arsitektur</span>
+                                <span style="color: #f8fafc; font-weight: 500; font-size: 0.9rem; text-align: right;">Ensemble<br><small style="color: #94a3b8;">(GBR 14% + XGB 90%)</small></span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                                <span class="m-label" style="margin:0;">Akurasi Klasifikasi</span>
+                                <span style="color: #10b981; font-weight: 600; font-size: 0.95rem;">56.97%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                                <span class="m-label" style="margin:0;">F1-Score (Macro)</span>
+                                <span style="color: #3b82f6; font-weight: 600; font-size: 0.95rem;">56.66%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span class="m-label" style="margin:0;">RMSE (Regresi)</span>
+                                <span style="color: #f59e0b; font-weight: 600; font-size: 0.95rem;">1.91</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+    
+    <script src="/static/script.js"></script>
+</body>
+</html>
