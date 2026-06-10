@@ -54,12 +54,12 @@ Model ensemble menghasilkan performa terbaik dalam memprediksi kondisi Rupiah 30
 - SHAP
 - Streamlit
 
-## Author
-Aufatir Diaul Haq
-
 ## Run
 
 ```bash
 pip install -r requirements.txt
 python app.py
+```
 
+## Author
+Aufatir Diaul Haq
