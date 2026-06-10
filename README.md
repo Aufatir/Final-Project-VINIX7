@@ -44,16 +44,6 @@ Variabel utama:
 
 Model ensemble menghasilkan performa terbaik dalam memprediksi kondisi Rupiah 30 hari ke depan.
 
-## Tech Stack
-
-- Python
-- Pandas
-- NumPy
-- Scikit-Learn
-- XGBoost
-- SHAP
-- Streamlit
-
 ## Run
 
 ```bash
