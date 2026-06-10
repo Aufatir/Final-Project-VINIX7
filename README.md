@@ -1,5 +1,5 @@
 # Final-Project-VINIX7
-Sistem prediksi kondisi nilai tukar Rupiah (USD/IDR) 30 hari ke depan menggunakan pendekatan **Regression-to-Classification (R2C)** dan model **Ensemble Gradient Boosting + XGBoost**.
+Sistem prediksi kondisi nilai tukar Rupiah (USD/IDR) 30 hari ke depan menggunakan pendekatan **Regression-to-Classification (R2C)** dan model **Ensemble Gradient Boosting + XGBoost**.Model memprediksi return USD/IDR terlebih dahulu, kemudian mengonversinya menjadi tiga kategori kondisi pasar: Menguat, Stabil, atau Melemah menggunakan asymmetric threshold optimization
 
 ## Features
 
