@@ -51,5 +51,4 @@ pip install -r requirements.txt
 python app.py
 ```
 
-## Author
-Aufatir Diaul Haq
+Dibuat oleh **Kelompok 5**
